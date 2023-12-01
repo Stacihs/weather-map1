@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: unset;
+    padding: unset;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+/*CLASSES*/
+.page-wrapper {
+    min-height: 100dvh;
+    font-size: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+}
+
+.col {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-around;
+    align-items: center;
+    height: 15rem;
+    width: 10rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/*IDs*/
+#map {
+    /* the width and height may be set to any size */
+    width: 80%;
+    height: 500px;
+}
+
+/*TAGs*/
+img {
+    width: 75px;
+    height: 75px;
+}
+
+header {
+    justify-content: center;
+    background-color: #d7edd7;
+    padding: 1.5rem;
+    gap: 20px;
+}
+
+form {
+    margin-bottom: 1rem;
+}
+
+label {
+    margin: 0.5rem;
+}
+
+section {
+    margin: 10px;
+}
+
+h1, h2, p {
+    text-align: center;
+}
+
+h2 {
+    font-size: 1em;
+}
+
+h2 span {
+    text-transform: uppercase;
+}
+
+
+
+h3 {
+    font-size: 2em;
+}
+
+p {
+    font-size: 1rem;
+}
