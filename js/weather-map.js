@@ -18,28 +18,30 @@ let userInput = document.querySelector("input").value;
 const searchBtn = document.querySelector("#search-btn");
 const currentLocation = document.querySelector("#current");
 
-
-
-// ********FOR CURRENT FORECAST***********
-fetch(fetchURL + `/weather?` + `id=4726206` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
-    .then(data => data.json())
-    .then(currentWeather => {
-        displayWXConditions(currentWeather);
-        createMarker(currentWeather);
-    })
-    .catch(error => console.error(error));
-
-
-// ***********FOR 5DAY FORECAST********
-fetch(fetchURL + `/forecast?` + `id=4726206` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
-    .then(data => data.json())
-    .then(forecast => {
-        displayFiveDayForecast(forecast);
-    })
-    .catch(error => console.error(error));
-
-
 //**********FUNCTIONS***********
+
+// ********SAN ANTONIO CURRENT FORECAST***********
+const sACurrent = () => {
+    fetch(fetchURL + `/weather?` + `id=4726206` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
+        .then(data => data.json())
+        .then(currentWeather => {
+            displayWXConditions(currentWeather);
+            createMarker(currentWeather);
+        })
+        .catch(error => console.error(error));
+}
+
+// ***********SAN ANTONIO 5DAY FORECAST********
+const sAFiveDay = () => {
+    fetch(fetchURL + `/forecast?` + `id=4726206` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
+        .then(data => data.json())
+        .then(forecast => {
+            displayFiveDayForecast(forecast);
+            createMarker(forecast);
+        })
+        .catch(error => console.error(error));
+}
+
 const userSearch = () => {
     geocode(`${userInput}`, MAPBOX_API_KEY).then(result => {
         map.setCenter(result);
@@ -91,12 +93,12 @@ const createMarker = (data) => {
             .addTo(map);
 
 
-        fetch(fetchURL + `/forecast?` + `lat=${updateLat}&lon=${updateLng}` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
-            .then(data => data.json())
-            .then(forecast => {
-                displayFiveDayForecast(forecast);
-            })
-            .catch(error => console.error(error));
+        // fetch(fetchURL + `/forecast?` + `lat=${updateLat}&lon=${updateLng}` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
+        //     .then(data => data.json())
+        //     .then(forecast => {
+        //         displayFiveDayForecast(forecast);
+        //     })
+        //     .catch(error => console.error(error));
     }
     marker.on('dragend', markerDragUpdate);
 }
@@ -110,7 +112,7 @@ const displayWXConditions = (currentWeather) => {
     temp.innerText = currentWeather.main.temp.toFixed(0);
     const icon = document.createElement("span");
     const wxIcon = wxIconURL + currentWeather.weather[0].icon + '.png';
-    icon.innerHTML = '<img src="' + wxIcon + '" />';
+    icon.innerHTML = '<img src="' + wxIcon + '"  alt=""/>';
     const description = document.createElement("p");
     description.innerText = currentWeather.weather[0].description;
     const tempSection = document.createElement("section");
@@ -140,7 +142,7 @@ const displayFiveDayForecast = (forecast) => {
             dailyTemp.innerText = day.main.temp.toFixed(0);
             const fiveIcon = document.createElement("span");
             const wxFiveIcon = wxIconURL + day.weather[0].icon + '.png';
-            fiveIcon.innerHTML = '<img src="' + wxFiveIcon + '" />';
+            fiveIcon.innerHTML = '<img src="' + wxFiveIcon + '"  alt=""/>';
             const fiveDayDescription = document.createElement("p");
             fiveDayDescription.innerText = day.weather[0].description;
             tempFiveSection.appendChild(daily);
@@ -177,3 +179,6 @@ searchBtn.addEventListener("click", (event) => {
     currentLocation.textContent = userInput.toUpperCase();
     userSearch();
 })
+
+// sACurrent();
+sAFiveDay();
