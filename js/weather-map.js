@@ -13,6 +13,9 @@ const fetchURL = `https://api.openweathermap.org/data/2.5`;
 const wxIconURL = `https://openweathermap.org/img/wn/`;
 const main = document.querySelector("main");
 const mapSection = document.querySelector("#map-row");
+const forecastSection = document.querySelector("#forecast-row");
+// const wxForecast = document.querySelector("#wx-forecast");
+// wxForecast.innerHTML = "";
 const input = document.querySelector("input");
 let userInput = document.querySelector("input").value;
 const searchBtn = document.querySelector("#search-btn");
@@ -50,6 +53,7 @@ const userSearch = () => {
             .then(data => data.json())
             .then(forecast => {
                 displayFiveDayForecast(forecast);
+                createMarker(forecast);
             })
             .catch(error => console.error(error));
     });
@@ -68,19 +72,13 @@ const createMarker = (data) => {
         let updateLng = lngLat.lng;
         let updateLat = lngLat.lat;
 
-        reverseGeocode({lng: updateLng, lat: updateLat}, MAPBOX_API_KEY).
-        then( results => {
+        reverseGeocode({lng: updateLng, lat: updateLat}, MAPBOX_API_KEY).then(results => {
             displayLocation(results);
         });
 
         const displayLocation = (results) => {
             currentLocation.textContent = results;
         }
-
-        const wxSections = document.querySelectorAll("section");
-        wxSections[0].classList.add("hidden");
-        wxSections[1].classList.add("hidden");
-        wxSections[2].classList.remove("hidden");
 
         const map = new mapboxgl.Map({
             container: 'map',
@@ -93,72 +91,45 @@ const createMarker = (data) => {
             .addTo(map);
 
 
-        // fetch(fetchURL + `/forecast?` + `lat=${updateLat}&lon=${updateLng}` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
-        //     .then(data => data.json())
-        //     .then(forecast => {
-        //         displayFiveDayForecast(forecast);
-        //     })
-        //     .catch(error => console.error(error));
+        fetch(fetchURL + `/forecast?` + `lat=${updateLat}&lon=${updateLng}` + `&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
+            .then(data => data.json())
+            .then(forecast => {
+                displayFiveDayForecast(forecast);
+            })
+            .catch(error => console.error(error));
     }
     marker.on('dragend', markerDragUpdate);
 }
 
 const displayWXConditions = (currentWeather) => {
-    const dateTime = document.createElement("p");
-    dateTime.innerText = convertDateTime(currentWeather.dt);
-    const tempHeader = document.createElement("h2");
-    tempHeader.innerText = "Current Conditions";
-    const temp = document.createElement("h3");
-    temp.innerText = currentWeather.main.temp.toFixed(0);
-    const icon = document.createElement("span");
     const wxIcon = wxIconURL + currentWeather.weather[0].icon + '.png';
-    icon.innerHTML = '<img src="' + wxIcon + '"  alt=""/>';
-    const description = document.createElement("p");
-    description.innerText = currentWeather.weather[0].description;
-    const tempSection = document.createElement("section");
-    tempSection.classList.add("row");
-    const daily = document.createElement("div");
-    daily.classList.add("card");
-    tempSection.appendChild(daily);
-    daily.appendChild(dateTime);
-    daily.appendChild(tempHeader);
-    daily.appendChild(temp);
-    daily.appendChild(icon);
-    daily.appendChild(description);
-    main.insertBefore(tempSection, mapSection);
+    forecastSection.innerHTML =
+        `<div class="currentForecast">
+            <div class="card">
+                <p>${convertDateTime(currentWeather.dt)}</p>
+                <h2>Current Conditions</h2>
+                <h3>${currentWeather.main.temp.toFixed(0)}</h3>
+                <span><img src="${wxIcon}"  alt=""/></span>
+                <p>${currentWeather.weather[0].description}</p>
+            </div>
+        </div>`
 }
 
-
 const displayFiveDayForecast = (forecast) => {
-    const tempFiveSection = document.createElement("section");
-    tempFiveSection.classList.add("row");
     forecast.list.forEach((day, index) => {
         if (index % 8 === 0) {
-            const daily = document.createElement("div")
-            daily.classList.add("card");
-            const dateTime = document.createElement("p");
-            dateTime.innerText = convertDateTime(day.dt);
-            const dailyTemp = document.createElement("h3");
-            dailyTemp.innerText = day.main.temp.toFixed(0);
-            const fiveIcon = document.createElement("span");
             const wxFiveIcon = wxIconURL + day.weather[0].icon + '.png';
-            fiveIcon.innerHTML = '<img src="' + wxFiveIcon + '"  alt=""/>';
-            const fiveDayDescription = document.createElement("p");
-            fiveDayDescription.innerText = day.weather[0].description;
-            tempFiveSection.appendChild(daily);
-            daily.appendChild(dateTime);
-            daily.appendChild(dailyTemp);
-            daily.appendChild(fiveIcon);
-            daily.appendChild(fiveDayDescription);
-            main.insertBefore(tempFiveSection, mapSection);
+            forecastSection.innerHTML +=
+                `<div class="fiveDayForecast">  
+                    <div class="card">
+                        <p>${convertDateTime(day.dt)}</p>
+                        <h3>${day.main.temp.toFixed(0)}</h3>
+                        <span><img src="${wxFiveIcon}"  alt=""/></span>
+                        <p>${day.weather[0].description}</p>
+                    </div>
+                </div>`
         }
-        const sections = document.querySelectorAll("section");
-        if (sections.length > 2) {
-            for (let i = sections.length - 3; i >= 0; i--) {
-                sections[i].classList.add("hidden");
-            }
-        }
-    });
+    })
 }
 
 const convertDateTime = (dt) => {
@@ -180,5 +151,5 @@ searchBtn.addEventListener("click", (event) => {
     userSearch();
 })
 
-// sACurrent();
-sAFiveDay();
+sACurrent();
+// sAFiveDay();
