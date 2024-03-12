@@ -14,8 +14,6 @@ const wxIconURL = `https://openweathermap.org/img/wn/`;
 const main = document.querySelector("main");
 const mapSection = document.querySelector("#map-row");
 const forecastSection = document.querySelector("#forecast-row");
-// const wxForecast = document.querySelector("#wx-forecast");
-// wxForecast.innerHTML = "";
 const input = document.querySelector("input");
 let userInput = document.querySelector("input").value;
 const searchBtn = document.querySelector("#search-btn");
@@ -102,9 +100,10 @@ const createMarker = (data) => {
 }
 
 const displayWXConditions = (currentWeather) => {
+    forecastSection.innerHTML = "";
     const wxIcon = wxIconURL + currentWeather.weather[0].icon + '.png';
     forecastSection.innerHTML =
-        `<div class="currentForecast">
+        `<div id="currentForecast">
             <div class="card">
                 <p>${convertDateTime(currentWeather.dt)}</p>
                 <h2>Current Conditions</h2>
@@ -116,11 +115,12 @@ const displayWXConditions = (currentWeather) => {
 }
 
 const displayFiveDayForecast = (forecast) => {
+    forecastSection.innerHTML = "";
     forecast.list.forEach((day, index) => {
         if (index % 8 === 0) {
             const wxFiveIcon = wxIconURL + day.weather[0].icon + '.png';
             forecastSection.innerHTML +=
-                `<div class="fiveDayForecast">  
+                `<div id="fiveDayForecast">  
                     <div class="card">
                         <p>${convertDateTime(day.dt)}</p>
                         <h3>${day.main.temp.toFixed(0)}</h3>
