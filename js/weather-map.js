@@ -11,8 +11,6 @@ const map = new mapboxgl.Map({
 
 const fetchURL = `https://api.openweathermap.org/data/2.5`;
 const wxIconURL = `https://openweathermap.org/img/wn/`;
-const main = document.querySelector("main");
-const mapSection = document.querySelector("#map-row");
 const forecastSection = document.querySelector("#forecast-row");
 const input = document.querySelector("input");
 let userInput = document.querySelector("input").value;
@@ -152,4 +150,4 @@ searchBtn.addEventListener("click", (event) => {
 })
 
 sACurrent();
-// sAFiveDay();
+sAFiveDay();
